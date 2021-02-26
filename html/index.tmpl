@@ -7,31 +7,35 @@
   <h1>Hello, {{.SourceIP}}</h1>
   <h1>Some useful information</h1>
   <p>Instance ID: {{.AWS.InstanceID}}</p>
+  <p>Status: {{.ConnectionStatus}}</p>
 
-  <h1>Dummy table</h1>
+  <p>Tags</p>
+  {{ range $key, $value := .AWS.Tags }}
+   <li><strong>{{ $key }}</strong>: {{ $value }}</li>
+  {{ end }}
+
+  <h1>Pets</h1>
 
     <table>
-      <caption>Alien football stars</caption>
+      <caption>Pets</caption>
       <tr>
-          <th scope="col">Player</th>
-          <th scope="col">Gloobles</th>
-          <th scope="col">Za'taak</th>
+          <th scope="col">Name</th>
+          <th scope="col">Owner</th>
+          <th scope="col">Species</th>
+          <th scope="col">Sex</th>
+          <th scope="col">BirthDate</th>
+          <th scope="col">DeathDate</th>
       </tr>
+      {{range .Pets}}
       <tr>
-          <th scope="row">TR-7</th>
-          <td>7</td>
-          <td>4,569</td>
+        <th scope="row">{{.Name}}</th>
+        <td>{{.Owner}}</td>
+        <td>{{.Species}}</td>
+        <td>{{.Sex}}</td>
+        <td>{{.BirthDate}}</td>
+        <td>{{.DeathDate}}</td>
       </tr>
-      <tr>
-          <th scope="row">Khiresh Odo</th>
-          <td>7</td>
-          <td>7,223</td>
-      </tr>
-      <tr>
-          <th scope="row">Mia Oolong</th>
-          <td>9</td>
-          <td>6,219</td>
-      </tr>
+      {{end}}
   </table>
 
 </body>

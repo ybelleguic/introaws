@@ -13,6 +13,15 @@ import (
 func main() {
 	aws := Initialize()
 
+	connectionStatus := "No Database Connection"
+	var pets []Pet
+	_, ok := aws.Tags["db_user"]
+	if ok {
+		pets = ReadDatabase(aws.Tags["db_user"], aws.Tags["db_password"], aws.Tags["db_auth_method"], aws.Tags["db_endpoint"])
+		connectionStatus = "Database Connection Successfull"
+	}
+
+
 	r := gin.Default()
 	t, err := loadTemplate()
 	if err != nil {
@@ -35,6 +44,8 @@ func main() {
 		c.HTML(http.StatusOK, "/html/index.tmpl", gin.H{
 			"SourceIP": c.ClientIP(),
 			"AWS":      aws,
+			"Pets": pets,
+			"ConnectionStatus": connectionStatus,
 		})
 	})
 
