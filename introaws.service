@@ -1,5 +1,5 @@
 [Unit]
-Description=Deluge Bittorrent Client Daemon
+Description=Intro AWS
 After=network-online.target
 
 [Service]
