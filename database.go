@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+
+	"os/exec"
 )
 
 type Pet struct {
@@ -28,11 +30,32 @@ func getConnByPassword(user, password, endpoint string) *sql.DB {
 }
 
 func ReadDatabase(user, password, authMethod, endpoint string) []Pet {
-	ret := []Pet{}
-	var db *sql.DB
-	if (authMethod == "password") {
-		db = getConnByPassword(user, password, endpoint)
+	endpoint = "database-2.cluster-c2oaznzpz4np.us-east-1.rds.amazonaws.com"
+	args := []string{"rds", "generate-db-auth-token", "--hostname", endpoint, "--port", "3306", "--username", "tutu", "--region", "us-east-1"}
+	cmd := exec.Command("aws",args...)
+	stdoutStderr, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println("error!")
 	}
+	password = string(stdoutStderr)
+	fmt.Println(password)
+
+    dsn := fmt.Sprintf("%s:%s@tcp(%s)/menagerie?allowCleartextPasswords=true&tls=true",
+        "tutu", password, endpoint,
+	)
+	db, err := sql.Open("mysql", dsn)
+    if err != nil {
+        panic(err)
+    }
+
+
+
+
+	ret := []Pet{}
+	// var db *sql.DB
+	// if (authMethod == "password") {
+	// 	db = getConnByPassword(user, password, endpoint)
+	// }
 
 	results, err := db.Query("SELECT * FROM pet")
     if err != nil {
